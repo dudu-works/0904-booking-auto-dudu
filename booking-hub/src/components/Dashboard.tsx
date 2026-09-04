@@ -14,11 +14,13 @@ export function Dashboard() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem('auto-judge');
-      if (saved !== null) {
-        setAutoJudge(JSON.parse(saved));
+      if (saved === 'true') {
+        setAutoJudge(true);
+      } else if (saved === 'false') {
+        setAutoJudge(false);
       }
     } catch (err) {
-      localStorage.removeItem('auto-judge');
+      // ignore
     }
   }, []);
 
