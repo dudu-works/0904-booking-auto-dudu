@@ -1,4 +1,5 @@
-import { SlotType, SLOTS, NEED, requiredSlots, occupied } from './slots';
+import type { SlotType } from './slots';
+import { SLOTS, NEED, requiredSlots, occupied } from './slots';
 
 export type DecisionType = 'asking' | 'rejected' | 'review' | 'pending' | 'confirmed_auto' | 'confirmed_human';
 
@@ -12,7 +13,6 @@ export interface DecideResult {
 
 export function decide(booking: any, allBookings: any[], autoOn: boolean): DecideResult {
   const trace: string[] = [];
-  const result: Partial<DecideResult> = {};
 
   const { kind, date, slots_wanted: slotsWantedStr, customer } = booking;
   const slots_wanted: SlotType[] = slotsWantedStr
@@ -37,7 +37,12 @@ export function decide(booking: any, allBookings: any[], autoOn: boolean): Decid
 
   trace.push(`2 종류 ${kind} -> 필요한 칸 ${NEED[kind] || 1}개 (희망 ${slots_wanted.join(', ')})`);
 
-  const occupiedSlots = occupied(date, allBookings.filter((b) => b.id !== booking.id && (b.decision === 'confirmed_auto' || b.decision === 'confirmed_human')));
+  const confirmedBookings = (allBookings || []).filter((b) => {
+    if (!b || b.id === booking.id) return false;
+    if (b.date !== date) return false;
+    return b.decision === 'confirmed_auto' || b.decision === 'confirmed_human';
+  });
+  const occupiedSlots = occupied(date, confirmedBookings);
   const availableSlots = SLOTS.filter((s) => !occupiedSlots.has(s));
 
   trace.push(`3 ${date} 달력: ${SLOTS.map((s) => `${s} ${occupiedSlots.has(s) ? 'X' : 'O'}`).join(', ')}`);

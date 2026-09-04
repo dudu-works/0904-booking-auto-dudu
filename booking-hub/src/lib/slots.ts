@@ -44,15 +44,20 @@ export function requiredSlots(kind: string, wanted: SlotType[]): SlotType[] {
 export function occupied(date: string, bookings: any[]): Set<SlotType> {
   const occupiedSlots = new Set<SlotType>();
 
+  if (!bookings || bookings.length === 0) return occupiedSlots;
+
   bookings.forEach((booking) => {
-    if (booking.date === date && booking.slot_assigned) {
-      const slots = booking.slot_assigned.split(',') as SlotType[];
-      slots.forEach((slot) => {
-        if (SLOTS.includes(slot)) {
-          occupiedSlots.add(slot);
-        }
-      });
-    }
+    if (!booking || booking.date !== date) return;
+
+    const slotStr = booking.slot_assigned || booking.slots_wanted;
+    if (!slotStr) return;
+
+    const slots = slotStr.split(',').map((s: string) => s.trim());
+    slots.forEach((slot: string) => {
+      if (SLOTS.includes(slot as SlotType)) {
+        occupiedSlots.add(slot as SlotType);
+      }
+    });
   });
 
   return occupiedSlots;
