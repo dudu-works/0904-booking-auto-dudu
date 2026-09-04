@@ -45,6 +45,7 @@ export function StatusCards({ bookings }: StatusCardsProps) {
                   <div className="text-gray-600">{booking.kind} / {booking.form}</div>
                   <div className="text-gray-600 truncate">{booking.memo}</div>
                   {booking.slot_assigned && <div className="text-blue-600 font-semibold">{booking.slot_assigned}</div>}
+                  {booking.candidate && <div className="text-blue-600 font-semibold">후보 ({booking.candidate})</div>}
                   {booking.reason && <div className="text-gray-600 line-clamp-2">{booking.reason}</div>}
                   {booking.options && <div className="text-gray-500 text-xs">{booking.options}</div>}
                 </div>

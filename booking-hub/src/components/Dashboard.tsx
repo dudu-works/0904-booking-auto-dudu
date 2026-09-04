@@ -64,14 +64,11 @@ export function Dashboard() {
     for (const booking of pendingBookings) {
       const decideResult = decide(booking, bookings, autoJudge);
 
-      const updateData: any = {
-        decision: decideResult.decision,
-      };
+      const updateData: any = {};
 
-      if (decideResult.reason) updateData.reason = decideResult.reason;
-      if (decideResult.options) updateData.options = decideResult.options;
-      if (decideResult.candidate) updateData.candidate = decideResult.candidate;
-      if (decideResult.trace.length > 0) updateData.trace = decideResult.trace.join('\n');
+      if (decideResult.candidate) {
+        updateData.candidate = decideResult.candidate;
+      }
 
       try {
         await supabase
