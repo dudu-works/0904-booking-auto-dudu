@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { BookingTable } from './components/BookingTable';
 import { BookingForm } from './components/BookingForm';
-import { StatCards } from './components/StatCards';
+import { Dashboard } from './components/Dashboard';
 import { UserProfile } from './components/UserProfile';
 import { LoginPage } from './components/LoginPage';
 import { AccessDenied } from './components/AccessDenied';
 import { StatusBoard } from './components/StatusBoard';
 import { supabase } from './lib/supabaseClient';
-import { isAdmin, getCurrentUserEmail } from './lib/adminCheck';
+import { isAdmin } from './lib/adminCheck';
 
 type TabType = '대시보드' | '예약목록' | '예약추가' | '상태관리' | '위치확인';
 
@@ -111,7 +111,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto">
           {activeTab === '대시보드' && (
             <div>
-              <StatCards refreshKey={refreshKey} />
+              <Dashboard />
             </div>
           )}
 
