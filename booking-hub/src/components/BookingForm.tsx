@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { addEventToCalendar, getCalendarAccessToken } from '../lib/googleCalendarService';
 import { judge } from '../lib/judge';
-import { decide } from '../lib/decide';
 
 type SlotType = '오전' | '오후-1' | '오후-2';
 
@@ -110,21 +109,10 @@ export function BookingForm({ onSuccess, isAdmin = false }: BookingFormProps) {
         via: 'form',
       };
 
-      const { data: allBookingsData } = await supabase.from('bookings').select('*');
-      const decideResult = decide(newBooking, allBookingsData || [], false);
 
       const { error: insertError } = await supabase
         .from('bookings')
-        .insert([
-          {
-            ...newBooking,
-            decision: decideResult.decision,
-            reason: decideResult.reason,
-            options: decideResult.options || null,
-            candidate: decideResult.candidate || null,
-            trace: decideResult.trace.join('\n'),
-          },
-        ]);
+        .insert([newBooking]);
 
       if (insertError) {
         setError(`예약 추가 실패: ${insertError.message}`);
