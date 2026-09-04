@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { decide } from '../lib/decide';
 import { WorkflowGraph } from './WorkflowGraph';
-import { JudgeLog } from './JudgeLog';
 import { StatusCards } from './StatusCards';
 
 export function Dashboard() {
@@ -125,9 +124,6 @@ export function Dashboard() {
         <h2 className="text-lg font-bold mb-4">워크플로우</h2>
         <WorkflowGraph bookings={bookings} lastDecision={lastDecision || undefined} />
       </div>
-
-      {/* Judge Log */}
-      <JudgeLog />
 
       {/* Status Cards */}
       <StatusCards bookings={bookings} />
