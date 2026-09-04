@@ -66,25 +66,27 @@ export function Dashboard() {
     for (const booking of pendingBookings) {
       const decideResult = decide(booking, bookings, autoJudge);
 
-      const updateData: any = {};
-
-      if (decideResult.candidate) {
-        updateData.candidate = decideResult.candidate;
-      }
+      const updateData: any = {
+        candidate: decideResult.candidate || null,
+      };
 
       try {
-        await supabase
+        const { error } = await supabase
           .from('bookings')
           .update(updateData)
           .eq('id', booking.id);
 
-        setLastDecision({
-          timestamp: Date.now(),
-          from: 'pending',
-          to: decideResult.decision,
-        });
+        if (!error) {
+          setLastDecision({
+            timestamp: Date.now(),
+            from: 'pending',
+            to: decideResult.decision,
+          });
+        } else {
+          console.error('판정 저장 실패:', error.message);
+        }
       } catch (err) {
-        console.error('판정 저장 실패:', err);
+        console.error('판정 저장 중 에러:', err);
       }
     }
 
