@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { decide, DecisionType } from '../lib/decide';
+import type { DecisionType } from '../lib/decide';
+import { decide } from '../lib/decide';
 
 interface Booking {
   id: number;
