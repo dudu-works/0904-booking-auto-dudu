@@ -22,32 +22,7 @@ export function JudgeLog() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
   useEffect(() => {
-    const channel = supabase
-      .channel('judge-log')
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'bookings',
-      }, (payload) => {
-        const { new: booking } = payload;
-        if (booking && booking.decision) {
-          setLogs((prev) => [
-            {
-              id: booking.id,
-              customer: booking.customer,
-              decision: booking.decision,
-              trace: booking.trace || '',
-              timestamp: Date.now(),
-            },
-            ...prev.slice(0, 11),
-          ]);
-        }
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    // Realtime 구독 비활성화 (decision/trace 필드 미존재)
   }, []);
 
   return (

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { addEventToCalendar, getCalendarAccessToken } from '../lib/googleCalendarService';
 import { judge } from '../lib/judge';
 
 type SlotType = '오전' | '오후-1' | '오후-2';
@@ -120,21 +119,6 @@ export function BookingForm({ onSuccess, isAdmin = false }: BookingFormProps) {
         return;
       }
 
-      // Admin 유저만 Google Calendar에 등록
-      if (isAdmin) {
-        try {
-          const accessToken = await getCalendarAccessToken();
-          await addEventToCalendar(accessToken, {
-            customer: formData.customer,
-            service: formData.memo,
-            date: formData.date,
-            time: '',
-            address: formData.address,
-          });
-        } catch (calendarError) {
-          console.warn('Google Calendar 등록 실패:', calendarError);
-        }
-      }
 
       setFormData({
         customer: '',
