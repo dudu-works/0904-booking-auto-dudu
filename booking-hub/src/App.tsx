@@ -5,6 +5,7 @@ import { StatCards } from './components/StatCards';
 import { UserProfile } from './components/UserProfile';
 import { LoginPage } from './components/LoginPage';
 import { AccessDenied } from './components/AccessDenied';
+import { StatusBoard } from './components/StatusBoard';
 import { supabase } from './lib/supabaseClient';
 import { isAdmin, getCurrentUserEmail } from './lib/adminCheck';
 
@@ -68,7 +69,7 @@ export default function App() {
     { id: '대시보드', name: '대시보드' },
     { id: '예약목록', name: '예약목록' },
     { id: '예약추가', name: '예약추가' },
-    { id: '상태관리', name: '상태관리', adminOnly: true },
+    { id: '상태관리', name: '미확정 관리', adminOnly: true },
     { id: '위치확인', name: '위치확인', adminOnly: true },
   ];
 
@@ -129,10 +130,10 @@ export default function App() {
           {activeTab === '상태관리' && (
             <div>
               <div className="mb-4">
-                <h2 className="text-xl font-bold text-gray-800">예약 상태 관리</h2>
-                <p className="text-gray-600 mt-2">상태 배지를 클릭하면 pending/confirmed로 토글됩니다</p>
+                <h2 className="text-xl font-bold text-gray-800">미확정 관리</h2>
+                <p className="text-gray-600 mt-2">대기/검토/거절/질문 상태의 예약을 확인하고 관리합니다</p>
               </div>
-              <BookingTable refreshKey={refreshKey} onRefresh={handleTableRefresh} />
+              <StatusBoard refreshKey={refreshKey} onRefresh={handleTableRefresh} />
             </div>
           )}
 

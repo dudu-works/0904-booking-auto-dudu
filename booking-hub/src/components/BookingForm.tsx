@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { addEventToCalendar, getCalendarAccessToken } from '../lib/googleCalendarService';
 import { judge } from '../lib/judge';
+import { decide } from '../lib/decide';
 
 type SlotType = '오전' | '오후-1' | '오후-2';
 
@@ -95,22 +96,33 @@ export function BookingForm({ onSuccess, isAdmin = false }: BookingFormProps) {
 
     setLoading(true);
     try {
+      const newBooking = {
+        customer: formData.customer,
+        kind: formData.kind,
+        form: formData.form,
+        memo: formData.memo,
+        address: formData.address,
+        date: formData.date,
+        time: '',
+        slots_wanted: slotsWantedStr,
+        status: 'pending',
+        service: formData.memo,
+        via: 'form',
+      };
+
+      const { data: allBookingsData } = await supabase.from('bookings').select('*');
+      const decideResult = decide(newBooking, allBookingsData || [], false);
+
       const { error: insertError } = await supabase
         .from('bookings')
         .insert([
           {
-            customer: formData.customer,
-            kind: formData.kind,
-            form: formData.form,
-            memo: formData.memo,
-            address: formData.address,
-            date: formData.date,
-            time: '',
-            slots_wanted: slotsWantedStr,
-            decision: 'pending',
-            status: 'pending',
-            service: formData.memo,
-            via: 'form',
+            ...newBooking,
+            decision: decideResult.decision,
+            reason: decideResult.reason,
+            options: decideResult.options || null,
+            candidate: decideResult.candidate || null,
+            trace: decideResult.trace.join('\n'),
           },
         ]);
 
