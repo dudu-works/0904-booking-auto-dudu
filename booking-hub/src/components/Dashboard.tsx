@@ -12,9 +12,13 @@ export function Dashboard() {
   const [lastDecision, setLastDecision] = useState<{ timestamp: number; from: string; to: string } | null>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem('auto-judge');
-    if (saved !== null) {
-      setAutoJudge(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem('auto-judge');
+      if (saved !== null) {
+        setAutoJudge(JSON.parse(saved));
+      }
+    } catch (err) {
+      localStorage.removeItem('auto-judge');
     }
   }, []);
 
